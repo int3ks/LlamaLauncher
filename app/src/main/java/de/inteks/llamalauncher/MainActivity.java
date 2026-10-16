@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Insets;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -370,6 +371,9 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         cbLogFollow = new CheckBox(this);
         cbLogFollow.setText(R.string.log_follow);
         cbLogFollow.setChecked(true);
+        cbLogFollow.setOnCheckedChangeListener((b, x) -> {
+            if (x) logScroll.post(this::scrollLogToEnd);
+        });
         row.addView(cbLogFollow);
         row.addView(new View(this), new LinearLayout.LayoutParams(0, 1, 1f));
         row.addView(smallButton(getString(R.string.btn_copy), v -> {
@@ -379,7 +383,15 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         row.addView(smallButton(getString(R.string.btn_refresh), v -> refreshLog()));
         l.addView(row);
 
-        logScroll = new ScrollView(this);
+        logScroll = new ScrollView(this) {
+            // Das markierbare Log-Feld setzt bei jedem setText den Cursor auf 0 und bittet die
+            // ScrollView, dorthin zu scrollen -> das Log sprang nach oben. Solche Anfragen ignorieren;
+            // gescrollt wird nur von Hand oder durch "Ans Ende springen".
+            @Override
+            public boolean requestChildRectangleOnScreen(View child, Rect rect, boolean immediate) {
+                return false;
+            }
+        };
         logText = new TextView(this);
         logText.setTypeface(Typeface.MONOSPACE);
         logText.setTextSize(11);
@@ -1431,10 +1443,18 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         io.execute(() -> {
             String t = readLogTail(path, 48 * 1024);
             ui.post(() -> {
-                logText.setText(t.isEmpty() ? getString(R.string.log_empty, etLog.getText().toString()) : t);
-                if (cbLogFollow.isChecked()) logScroll.post(() -> logScroll.fullScroll(View.FOCUS_DOWN));
+                String shown = t.isEmpty() ? getString(R.string.log_empty, etLog.getText().toString()) : t;
+                // nur bei neuem Inhalt ersetzen: kein unnoetiges Neu-Layout, Markierung bleibt erhalten
+                if (!shown.contentEquals(logText.getText())) logText.setText(shown);
+                if (cbLogFollow.isChecked()) logScroll.post(this::scrollLogToEnd);
             });
         });
+    }
+
+    /** Ans Ende des Logs scrollen, ohne den Fokus zu verschieben (anders als fullScroll). */
+    private void scrollLogToEnd() {
+        int end = logText.getHeight() - logScroll.getHeight();
+        if (end > 0 && logScroll.getScrollY() != end) logScroll.scrollTo(0, end);
     }
 
     /** Letzte maxBytes der Log-Datei, ohne Farbcodes und ohne angeschnittene erste Zeile. */
