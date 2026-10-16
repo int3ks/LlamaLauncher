@@ -5,7 +5,7 @@ Pick a model, adjust the parameters, start `llama-server` and chat in the built-
 
 [Deutsche Version](README.de.md)
 
-> **What works on the tablet and what doesn't?** Measurements, recommended settings, GPU crashes, dead ends (OpenCL, MTP) and the complete Termux/llama.cpp setup with build script are documented in the wiki: **[Termux and Building llama.cpp](https://www.notion.so/3ec54030382a817983dbdd7ea52c2303)**
+> **What works on the tablet and what doesn't?** Measurements, recommended settings, GPU crashes, dead ends (OpenCL, MTP) and the complete Termux/llama.cpp setup with build script are documented in the wiki: **[Termux and Building llama.cpp](https://concrete-bobcat-e1f.notion.site/Termux-and-Building-llama-cpp-3ec54030382a817983dbdd7ea52c2303)**
 
 Llama Launcher does not bundle llama.cpp. The server keeps running in Termux, where llama.cpp can use the GPU via Vulkan (Mesa Turnip on Adreno). The app sends Termux the commands through Termux's official [RUN_COMMAND interface](https://github.com/termux/termux-app/wiki/RUN_COMMAND-Intent) and shows the llama.cpp web UI in a WebView.
 
@@ -56,7 +56,7 @@ Termux:Widget and Termux:API are **not** needed for the app.
    cmake --build ~/llama.cpp/build-vk -j8 --target llama-server
    ```
 
-   A complete build/update script (including an optional patch that gives the Android UI GPU priority) is in the [wiki](https://www.notion.so/3ec54030382a817983dbdd7ea52c2303).
+   A complete build/update script (including an optional patch that gives the Android UI GPU priority) is in the [wiki](https://concrete-bobcat-e1f.notion.site/Termux-and-Building-llama-cpp-3ec54030382a817983dbdd7ea52c2303).
 
 2. **Allow Termux to accept commands from apps** (once, in Termux):
 
@@ -118,7 +118,7 @@ log view     --reads log file (all files access)
 
 ## Links
 
-- [Wiki: Termux and Building llama.cpp](https://www.notion.so/3ec54030382a817983dbdd7ea52c2303) – full setup, build script, measurements, what works and what doesn't
+- [Wiki: Termux and Building llama.cpp](https://concrete-bobcat-e1f.notion.site/Termux-and-Building-llama-cpp-3ec54030382a817983dbdd7ea52c2303) – full setup, build script, measurements, what works and what doesn't
 - [llama.cpp](https://github.com/ggml-org/llama.cpp)
 - [Termux RUN_COMMAND intent](https://github.com/termux/termux-app/wiki/RUN_COMMAND-Intent)
 

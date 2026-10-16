@@ -5,7 +5,7 @@ Modell wählen, Parameter einstellen, `llama-server` starten und in der eingebau
 
 [English version](README.md)
 
-> **Was geht auf dem Tablet und was nicht?** Messwerte, empfohlene Einstellungen, GPU-Abstürze, Sackgassen (OpenCL, MTP) und die komplette Einrichtung von Termux und llama.cpp mit Bauskript stehen im Wiki (Englisch, mit Link zur deutschen Fassung): **[Termux and Building llama.cpp](https://www.notion.so/3ec54030382a817983dbdd7ea52c2303)**
+> **Was geht auf dem Tablet und was nicht?** Messwerte, empfohlene Einstellungen, GPU-Abstürze, Sackgassen (OpenCL, MTP) und die komplette Einrichtung von Termux und llama.cpp mit Bauskript stehen im Wiki (Englisch, mit Link zur deutschen Fassung): **[Termux and Building llama.cpp](https://concrete-bobcat-e1f.notion.site/Termux-and-Building-llama-cpp-3ec54030382a817983dbdd7ea52c2303)**
 
 Llama Launcher bringt kein eigenes llama.cpp mit. Der Server läuft weiter in Termux, wo llama.cpp die GPU über Vulkan nutzen kann (Mesa Turnip auf Adreno). Die App schickt Termux die Befehle über dessen offizielle [RUN_COMMAND-Schnittstelle](https://github.com/termux/termux-app/wiki/RUN_COMMAND-Intent) und zeigt die Web-UI von llama.cpp in einem WebView.
 
@@ -56,7 +56,7 @@ Termux:Widget und Termux:API braucht die App **nicht**.
    cmake --build ~/llama.cpp/build-vk -j8 --target llama-server
    ```
 
-   Ein komplettes Bau- und Update-Skript (mit optionalem Patch, der der Android-UI bei der GPU Vorrang gibt) steht im [Wiki](https://www.notion.so/3ec54030382a817983dbdd7ea52c2303).
+   Ein komplettes Bau- und Update-Skript (mit optionalem Patch, der der Android-UI bei der GPU Vorrang gibt) steht im [Wiki](https://concrete-bobcat-e1f.notion.site/Termux-and-Building-llama-cpp-3ec54030382a817983dbdd7ea52c2303).
 
 2. **Termux Befehle von Apps erlauben** (einmalig, in Termux):
 
@@ -117,7 +117,7 @@ Log-Ansicht   --liest die Log-Datei (Zugriff auf alle Dateien)
 
 ## Links
 
-- [Wiki: Termux and Building llama.cpp](https://www.notion.so/3ec54030382a817983dbdd7ea52c2303) – komplette Einrichtung, Bauskript, Messwerte, was geht und was nicht
+- [Wiki: Termux and Building llama.cpp](https://concrete-bobcat-e1f.notion.site/Termux-and-Building-llama-cpp-3ec54030382a817983dbdd7ea52c2303) – komplette Einrichtung, Bauskript, Messwerte, was geht und was nicht
 - [llama.cpp](https://github.com/ggml-org/llama.cpp)
 - [Termux RUN_COMMAND-Intent](https://github.com/termux/termux-app/wiki/RUN_COMMAND-Intent)
 
