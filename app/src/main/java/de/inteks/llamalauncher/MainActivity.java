@@ -395,6 +395,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         logText = new TextView(this);
         logText.setTypeface(Typeface.MONOSPACE);
         logText.setTextSize(11);
+        logText.setTextColor(labelColor()); // wie die Beschriftungen: dunkel = helles Gelb, hell = dunkles Braun
         logText.setTextIsSelectable(true);
         logText.setPadding(dp(8), dp(4), dp(8), dp(8));
         logScroll.addView(logText);
