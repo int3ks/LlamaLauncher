@@ -81,8 +81,8 @@ final class TermuxBridge {
      * @return null bei Erfolg, sonst eine Fehlermeldung
      */
     static String runScript(Context ctx, String cmd, String label, String script, List<String> args) {
-        if (!isTermuxInstalled(ctx)) return "Termux ist nicht installiert.";
-        if (!hasRunCommandPermission(ctx)) return "Die App hat noch keine Berechtigung, Befehle in Termux auszufuehren.";
+        if (!isTermuxInstalled(ctx)) return ctx.getString(R.string.toast_no_termux);
+        if (!hasRunCommandPermission(ctx)) return ctx.getString(R.string.err_no_perm);
 
         List<String> all = new ArrayList<>();
         all.add("-c");
@@ -110,9 +110,9 @@ final class TermuxBridge {
             ctx.startForegroundService(intent);
             return null;
         } catch (SecurityException e) {
-            return "Termux hat den Befehl abgelehnt (Berechtigung?): " + e.getMessage();
+            return ctx.getString(R.string.err_rejected, e.getMessage());
         } catch (RuntimeException e) {
-            return "Termux konnte nicht gestartet werden: " + e.getMessage();
+            return ctx.getString(R.string.err_start_termux, e.getMessage());
         }
     }
 
@@ -128,9 +128,9 @@ final class TermuxBridge {
     static final String SCRIPT_START =
             "log=\"$1\"; shift\n"
             + "mkdir -p \"$(dirname \"$log\")\" || exit 90\n"
-            + "if [ ! -x \"$1\" ]; then echo \"llama-server nicht gefunden: $1\" > \"$log\"; exit 91; fi\n"
+            + "if [ ! -x \"$1\" ]; then echo \"llama-server not found: $1\" > \"$log\"; exit 91; fi\n"
             + "termux-wake-lock 2>/dev/null\n"
-            + "echo \"Kommandozeile: $*\" > \"$log\"\n"
+            + "echo \"Command line: $*\" > \"$log\"\n"
             + "echo >> \"$log\"\n"
             + "\"$@\" >> \"$log\" 2>&1\n"
             + "rc=$?\n"

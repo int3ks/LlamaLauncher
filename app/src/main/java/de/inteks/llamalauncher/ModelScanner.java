@@ -31,7 +31,8 @@ final class ModelScanner {
         final List<File> models = new ArrayList<>();
         final List<File> mtps = new ArrayList<>();
         final List<File> loras = new ArrayList<>();
-        String error;
+        int error;          // Text-ID (R.string) oder 0
+        String errorPath;   // Pfad fuer die Fehlermeldung
     }
 
     private ModelScanner() {
@@ -40,13 +41,15 @@ final class ModelScanner {
     static Result scan(File dir) {
         Result r = new Result();
         if (!dir.isDirectory()) {
-            r.error = "Modellordner nicht gefunden: " + dir.getPath();
+            r.error = R.string.scan_dir_missing;
+            r.errorPath = dir.getPath();
             return r;
         }
         List<File> files = new ArrayList<>();
         collect(dir, files, 0);
         if (files.isEmpty() && dir.listFiles() == null) {
-            r.error = "Kein Zugriff auf " + dir.getPath() + " (Dateizugriff erlaubt?)";
+            r.error = R.string.scan_no_access;
+            r.errorPath = dir.getPath();
             return r;
         }
         files.sort(Comparator.comparing(File::getPath));

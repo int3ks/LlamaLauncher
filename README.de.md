@@ -27,6 +27,7 @@ Gebaut und getestet auf einem Honor MagicPad 3 Pro (Snapdragon 8 Elite Gen 5, Ad
 - **Starten / Stoppen** aus der App. Stoppen beendet auch einen Server, der per Shell-Skript auf demselben Port gestartet wurde.
 - Optionaler **Autostart** mit den letzten Einstellungen beim Öffnen der App.
 - Erkennt, welche Optionen der installierte llama.cpp-Build kennt (`--load-mode`, `--no-jinja`, `--spec-type`, `--lora-scaled`, `--reasoning`), und weicht bei älteren Builds aus.
+- **Oberfläche auf Deutsch und Englisch**, je nach Systemsprache automatisch.
 - Nur Java und Android-SDK, **keine Fremdbibliotheken**. Die Oberfläche wird im Code aufgebaut (keine Layout-XML).
 
 ## Voraussetzungen
@@ -105,6 +106,7 @@ Log-Ansicht   --liest die Log-Datei (Zugriff auf alle Dateien)
 - Die Chats der eingebauten Web-UI liegen im WebView der App, getrennt vom Browser.
 - Herunterladen (z. B. Chat-Export) geht im eingebauten WebView nicht. Dafür in den Einstellungen „Web-UI im Browser“ nutzen.
 - Das Log liegt unter `Documents/LlamaLauncher/llama-server.log`.
+- Die Oberfläche folgt der Systemsprache: Deutsch auf deutschen Systemen, sonst Englisch.
 
 ## Fehlersuche
 

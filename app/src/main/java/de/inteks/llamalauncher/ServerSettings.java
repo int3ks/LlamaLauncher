@@ -23,38 +23,12 @@ final class ServerSettings {
     static final int LLAMA_DEF_CHECKPOINTS = 32;
     static final int LLAMA_DEF_DRAFT_N = 3;
 
-    // Auswahllisten
+    // Auswahllisten (die Beschriftungen stehen in res/values*/strings.xml, gleiche Reihenfolge)
     static final String[] KV_TYPES = {"f16", "q8_0", "q5_0", "q4_0"};
-    static final String[] KV_LABELS = {
-            "f16 - keine Quantisierung, doppelter Speicher",
-            "q8_0 - praktisch kein Verlust, halber Speicher (empfohlen)",
-            "q5_0 - kleiner, Verlust bei langen Chats moeglich",
-            "q4_0 - am kleinsten, Verlust bei langen Chats moeglich"};
     static final int[] UB_VALUES = {32, 64, 128, 256, 512};
-    static final String[] UB_LABELS = {
-            "32 - stabil",
-            "64 - stabil, guter Kompromiss (empfohlen)",
-            "128 - stabil, schnellerer Prefill",
-            "256 - nicht getestet",
-            "512 - llama.cpp-Standard, auf Adreno 840 + Gemma 4 + FA: GPU-Absturz"};
     static final String[] LOAD_MODES = {"auto", "mmap", "mmap+mlock", "mlock", "dio", "none"};
-    static final String[] LOAD_LABELS = {
-            "auto - llama.cpp-Standard",
-            "mmap - Modelldatei zusaetzlich gemappt",
-            "mmap+mlock - ohne Root wirkungslos",
-            "mlock - ohne Root wirkungslos",
-            "dio - Direct-IO beim Laden",
-            "none - direkt in die GPU-Buffer (empfohlen)"};
-    static final String[] TEMPLATE_LABELS = {
-            "Jinja - Template aus dem Modell (Standard, noetig fuer Gemma 4, Tool-Calls, Thinking)",
-            "--no-jinja - fest eingebaute llama.cpp-Templates (Gemma 4 geht damit nicht)"};
     static final String[] REASONING_VALUES = {"auto", "off", "on"};
-    static final String[] REASONING_LABELS = {
-            "auto - Standard, Thinking an, wenn das Template es kann",
-            "aus (--reasoning off) - wenn die Web-UI es nicht abschaltet",
-            "an (--reasoning on)"};
     static final String[] LORA_SCALES = {"1.00", "1.25", "1.50", "1.75", "2.00", "2.25", "2.50"};
-    static final String[] VERBOSITY_LABELS = {"1", "2", "3 - llama.cpp-Standard", "4 - sehr ausfuehrlich"};
 
     // Vorgaben dieser App (wie in llama-start.sh)
     int ctx = 8192;
@@ -167,32 +141,15 @@ final class ServerSettings {
         return s;
     }
 
-    /** Kurze Zusammenfassung wie in der Statuszeile von llama-start.sh. */
-    String summary() {
-        StringBuilder b = new StringBuilder();
-        b.append("ctx ").append(ctx).append(", KV ").append(kv).append(", ub ").append(ub)
-                .append(", cache ").append(cacheRam).append(" MiB, ").append(threads).append(" Threads, load ")
-                .append(loadMode).append(", ").append(noJinja ? "no-jinja" : "jinja");
-        if (!noJinja && !"auto".equals(reasoning)) b.append(", reasoning ").append(reasoning);
-        if (!mtpPath.isEmpty()) {
-            b.append(", MTP ").append(new java.io.File(mtpPath).getName()).append(" n=").append(draftN)
-                    .append(draftCpu ? " CPU" : " GPU");
-        }
-        if (!loraPath.isEmpty()) {
-            b.append(", LoRA ").append(new java.io.File(loraPath).getName()).append(" x").append(loraScale);
-        }
-        return b.toString();
-    }
-
     // ---------------------------------------------------------------------------------------
     // Kommandozeile
     // ---------------------------------------------------------------------------------------
 
-    /** Ergebnis von {@link #buildArgs}: Argumentliste oder Fehlermeldung. */
+    /** Ergebnis von {@link #buildArgs}: Argumentliste, Hinweise und Fehler als Text-IDs (R.string, 0 = kein Fehler). */
     static final class Built {
         final List<String> args = new ArrayList<>();
-        final List<String> notes = new ArrayList<>();
-        String error;
+        final List<Integer> notes = new ArrayList<>();
+        int error;
     }
 
     /**
@@ -214,7 +171,7 @@ final class ServerSettings {
         // MTP-Drafter
         if (!mtpPath.isEmpty()) {
             if (!f.specType) {
-                r.notes.add("Build kennt kein --spec-type - MTP wird uebersprungen.");
+                r.notes.add(R.string.build_skip_mtp);
             } else {
                 a.add("--model-draft");
                 a.add(mtpPath);
@@ -234,15 +191,15 @@ final class ServerSettings {
         // LoRA
         if (!loraPath.isEmpty()) {
             if (!f.loraScaled) {
-                r.notes.add("Build kennt kein --lora-scaled - LoRA wird uebersprungen.");
+                r.notes.add(R.string.build_skip_lora);
             } else if (loraPath.contains(",")) {
-                r.error = "Der LoRA-Pfad enthaelt ein Komma - das kann llama.cpp nicht verarbeiten.";
+                r.error = R.string.build_lora_comma;
                 return r;
             } else if ("1.00".equals(loraScale)) {
                 a.add("--lora");
                 a.add(loraPath);
             } else if (loraPath.contains(":")) {
-                r.error = "Der LoRA-Pfad enthaelt einen Doppelpunkt - mit Staerke geht das nicht.";
+                r.error = R.string.build_lora_colon;
                 return r;
             } else {
                 a.add("--lora-scaled");
@@ -305,7 +262,7 @@ final class ServerSettings {
                 a.add("--reasoning");
                 a.add(reasoning);
             } else {
-                r.notes.add("Build kennt kein --reasoning - bleibt beim Standard.");
+                r.notes.add(R.string.build_skip_reasoning);
             }
         }
 

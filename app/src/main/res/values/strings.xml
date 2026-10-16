@@ -1,4 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- English (default): used on every system that is not set to German. -->
 <resources>
     <string name="app_name">Llama Launcher</string>
+    <string name="tab_chat">Chat</string>
+    <string name="tab_settings">Settings</string>
+    <string name="tab_log">Log</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_stop">Stop</string>
+    <string name="toast_no_download">Downloads don\'t work in the built-in browser - please open the web UI in the browser.</string>
+    <string name="log_follow">Jump to end</string>
+    <string name="btn_copy">Copy</string>
+    <string name="toast_log_copied">Log copied</string>
+    <string name="btn_refresh">Refresh</string>
+    <string name="title_model">Model</string>
+    <string name="btn_rescan">Rescan</string>
+    <string name="title_mtp">MTP drafter (speculative decoding)</string>
+    <string name="hint_mtp">A small draft model proposes tokens, the large model only verifies them. Costs RAM; on the MagicPad 3 Pro so far at best equally fast. Must match the model.</string>
+    <string name="label_draft_n">Draft tokens per step (--spec-draft-n-max)</string>
+    <string name="hint_draft_n">More = more gain when they are right, more loss when not. llama.cpp default: 3</string>
+    <string name="cb_draft_cpu">Drafter on the CPU instead of the GPU (-ngld 0)</string>
+    <string name="title_lora">LoRA adapter</string>
+    <string name="hint_lora">Applies a small change on top of the model at startup (e.g. uncensored). Must match the base model, otherwise startup fails.</string>
+    <string name="label_lora_scale">Strength</string>
+    <string name="hint_lora_scale">1.00 = single, higher = stronger. AtomicChat recommends 1.75 for its uncensored LoRA.</string>
+    <string name="title_context">Context and memory</string>
+    <string name="label_ctx">Context length (-c)</string>
+    <string name="hint_ctx">1K to 64K in steps of 1024. The memory for the KV cache is reserved in full at startup.</string>
+    <string name="label_kv">KV cache (-ctk/-ctv)</string>
+    <string name="hint_kv">Stores the chat history inside the model in compressed form. There is no Q6.</string>
+    <string name="label_cache">Prompt cache in MiB (--cache-ram)</string>
+    <string name="hint_cache">Keeps other chats in RAM so switching doesn\'t need a new prefill. 0 = off, 8192 = llama.cpp default (too much with 16 GB).</string>
+    <string name="label_ckpt">Context checkpoints per slot (--ctx-checkpoints)</string>
+    <string name="hint_ckpt">Up to 170 MB per checkpoint with Gemma 4 12B. llama.cpp default: 32</string>
+    <string name="title_gpu">GPU and CPU</string>
+    <string name="label_ub">Micro-batch (-ub)</string>
+    <string name="hint_ub">Prompt tokens per GPU job (prefill only). Larger = faster prefill, but more stutter. No effect on decode speed.</string>
+    <string name="label_threads">CPU threads (-t)</string>
+    <string name="hint_threads">The model computes on the GPU. Don\'t use all 8 cores, otherwise nothing is left for the UI.</string>
+    <string name="label_load">Load mode (--load-mode)</string>
+    <string name="hint_load">mlock has no effect without root (limit 64 KB).</string>
+    <string name="title_chat">Chat</string>
+    <string name="label_template">Chat template</string>
+    <string name="label_reasoning">Reasoning / thinking</string>
+    <string name="hint_reasoning">\"off\" only works with Jinja and only if the template has a thinking switch.</string>
+    <string name="title_more">More</string>
+    <string name="label_verbosity">Log verbosity (-lv)</string>
+    <string name="label_extra">Extra parameters</string>
+    <string name="hint_extra">Appended at the end, e.g. --temp 0.1 --top-k 50</string>
+    <string name="title_cmdline">Command line</string>
+    <string name="btn_start_server">Start server</string>
+    <string name="btn_load_defaults">Load defaults</string>
+    <string name="toast_defaults_loaded">Defaults loaded - they are saved on the next start.</string>
+    <string name="cb_autostart">Start automatically with the last settings when the app opens</string>
+    <string name="title_paths">Paths</string>
+    <string name="label_model_dir">Models folder</string>
+    <string name="label_server">llama-server (in Termux)</string>
+    <string name="label_log">Log file</string>
+    <string name="hint_log">Termux writes here, the app reads along.</string>
+    <string name="label_port">Port</string>
+    <string name="btn_save_paths">Apply paths</string>
+    <string name="btn_webui_browser">Web UI in browser</string>
+    <string name="btn_open_termux">Open Termux</string>
+    <string name="toast_no_app">No app found to open this.</string>
+    <string name="toast_no_termux">Termux is not installed.</string>
+    <string name="setup_title_ok">Setup: all set</string>
+    <string name="setup_title">Setup</string>
+    <string name="setup_termux">Termux installed</string>
+    <string name="setup_termux_hint">Install Termux from GitHub (as described in the wiki).</string>
+    <string name="setup_perm">Permission \"Run commands in Termux environment\"</string>
+    <string name="btn_grant">Grant</string>
+    <string name="setup_files">All files access (models folder, log)</string>
+    <string name="btn_allow">Allow</string>
+    <string name="setup_test">Termux test (allow-external-apps, llama-server)</string>
+    <string name="btn_retest">Test again</string>
+    <string name="btn_test">Test</string>
+    <string name="setup_props_hint">Enter once in Termux so that Termux accepts commands from this app:</string>
+    <string name="btn_copy_cmd">Copy command</string>
+    <string name="toast_copied_termux">Copied - paste it in Termux with Ctrl+Alt+V.</string>
+    <string name="toast_perm_settings">Under Permissions &gt; Additional permissions, allow \"Run commands in Termux environment\".</string>
+    <string name="check_running">Test running …</string>
+    <string name="scan_reading">Reading models folder …</string>
+    <string name="no_models">(no models found)</string>
+    <string name="scan_no_files_perm">Without \"All files access\" the app can\'t see any .gguf files.</string>
+    <string name="scan_dir_missing">Models folder not found: %1$s</string>
+    <string name="scan_no_access">No access to %1$s (all files access granted?)</string>
+    <string name="preset_loaded">Saved settings of this model loaded.</string>
+    <string name="preset_none">No saved settings yet - defaults loaded.</string>
+    <string name="mmproj_loaded">mmproj (vision) will be loaded too: %1$s</string>
+    <string name="mtp_off">off</string>
+    <string name="lora_none">none</string>
+    <string name="mark_mtp_match">"   &lt;- matches the model"</string>
+    <string name="mark_lora_match">"   &lt;- probably matches the model"</string>
+    <string name="note_saved_mtp_missing">Saved MTP drafter is missing - MTP off.</string>
+    <string name="note_saved_lora_missing">Saved LoRA is missing - LoRA off.</string>
+    <string name="note_nojinja_reasoning">--reasoning has no effect with --no-jinja.</string>
+    <string name="note_no_reasoning">This llama.cpp build doesn\'t know --reasoning.</string>
+    <string name="note_no_spec">This llama.cpp build doesn\'t know --spec-type.</string>
+    <string name="note_no_lora">This llama.cpp build doesn\'t know --lora-scaled.</string>
+    <string name="cmd_no_model">(no model selected)</string>
+    <string name="cmd_error">Error: %1$s</string>
+    <string name="cmd_note">Note: %1$s</string>
+    <string name="cmd_untested">Note: llama.cpp build not tested yet - a current build is assumed.</string>
+    <string name="build_skip_mtp">Build doesn\'t know --spec-type - MTP is skipped.</string>
+    <string name="build_skip_lora">Build doesn\'t know --lora-scaled - LoRA is skipped.</string>
+    <string name="build_skip_reasoning">Build doesn\'t know --reasoning - keeping the default.</string>
+    <string name="build_lora_comma">The LoRA path contains a comma - llama.cpp can\'t handle that.</string>
+    <string name="build_lora_colon">The LoRA path contains a colon - not possible with a strength.</string>
+    <string name="toast_paths_saved">Paths saved</string>
+    <string name="dlg_setup_missing">Setup missing</string>
+    <string name="msg_setup_missing_start">Please set up Termux and the permission under \"Setup\" at the top first.</string>
+    <string name="dlg_no_model">No model</string>
+    <string name="msg_no_model">No model was found in the models folder.</string>
+    <string name="dlg_cannot_start">Can\'t start</string>
+    <string name="dlg_running">Server already running</string>
+    <string name="msg_restart">Stop the running server and restart it with these settings?</string>
+    <string name="btn_restart">Restart</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="dlg_start_failed">Start failed</string>
+    <string name="msg_setup_missing_stop">Without the permission \"Run commands in Termux environment\" the app can\'t stop the server.</string>
+    <string name="dlg_stop_failed">Stop failed</string>
+    <string name="check_rejected">"Termux rejected the command: %1$s\n     Usually allow-external-apps is missing (command below)."</string>
+    <string name="check_no_server">Termux OK, but llama-server is missing at %1$s (did you run build-llama-vk.sh?)</string>
+    <string name="check_ok">Termux OK, llama-server found.%1$s</string>
+    <string name="check_unexpected">Unexpected answer: %1$s</string>
+    <string name="toast_stop_failed">llama-server could not be stopped.</string>
+    <string name="features_all">" All options available."</string>
+    <string name="features_missing">" Missing in this build: %1$s"</string>
+    <string name="dlg_start_rejected">Termux rejected the start</string>
+    <string name="msg_start_rejected">%1$s\n\nUsually the line allow-external-apps = true is missing in Termux (see Setup).</string>
+    <string name="exit_normal">exited normally</string>
+    <string name="exit_90">the log folder could not be created (Termux storage access?)</string>
+    <string name="exit_91">llama-server was not found (check the path under \"Paths\")</string>
+    <string name="exit_134">aborted (SIGABRT) - e.g. a GGML error or GPU \"device lost\"</string>
+    <string name="exit_137">killed by the system (SIGKILL) - often low memory</string>
+    <string name="exit_139">crashed (SIGSEGV)</string>
+    <string name="exit_none">no exit code</string>
+    <string name="exit_code">exit code %1$d</string>
+    <string name="dlg_exited_closed">llama-server has stopped in the meantime</string>
+    <string name="dlg_exited">llama-server has stopped</string>
+    <string name="last_log_lines">Last log lines:</string>
+    <string name="status_ready">● Ready</string>
+    <string name="status_loading">● Loading model …</string>
+    <string name="status_starting">● Starting …</string>
+    <string name="status_stopping">● Stopping …</string>
+    <string name="status_stopped">● Stopped</string>
+    <string name="status_checking">● Checking …</string>
+    <string name="overlay_loading">Loading the model …\nProgress is shown under \"Log\".</string>
+    <string name="overlay_stopping">Stopping the server …</string>
+    <string name="overlay_stopped">The server is not running.\nTap \"Start\" at the top or choose a model under \"Settings\".</string>
+    <string name="log_empty">(Log is empty or doesn\'t exist yet: %1$s)</string>
+    <string name="log_no_access">(No access to the log file - allow \"All files access\")</string>
+    <string name="toast_no_file_app">No app found to pick files.</string>
+    <string name="err_no_perm">The app doesn\'t have permission to run commands in Termux yet.</string>
+    <string name="err_rejected">Termux rejected the command (permission?): %1$s</string>
+    <string name="err_start_termux">Termux could not be started: %1$s</string>
+    <string-array name="kv_labels">
+        <item>f16 - no quantization, twice the memory</item>
+        <item>q8_0 - practically lossless, half the memory (recommended)</item>
+        <item>q5_0 - smaller, loss possible in long chats</item>
+        <item>q4_0 - smallest, loss possible in long chats</item>
+    </string-array>
+    <string-array name="ub_labels">
+        <item>32 - stable</item>
+        <item>64 - stable, good compromise (recommended)</item>
+        <item>128 - stable, faster prefill</item>
+        <item>256 - not tested</item>
+        <item>512 - llama.cpp default; GPU crash on Adreno 840 + Gemma 4 + FA</item>
+    </string-array>
+    <string-array name="load_labels">
+        <item>auto - llama.cpp default</item>
+        <item>mmap - model file additionally mapped</item>
+        <item>mmap+mlock - no effect without root</item>
+        <item>mlock - no effect without root</item>
+        <item>dio - direct I/O while loading</item>
+        <item>none - straight into the GPU buffers (recommended)</item>
+    </string-array>
+    <string-array name="template_labels">
+        <item>Jinja - template from the model (default, required for Gemma 4, tool calls, thinking)</item>
+        <item>--no-jinja - llama.cpp\'s built-in templates (doesn\'t work with Gemma 4)</item>
+    </string-array>
+    <string-array name="reasoning_labels">
+        <item>auto - default, thinking on if the template supports it</item>
+        <item>off (--reasoning off) - if the web UI doesn\'t switch it off</item>
+        <item>on (--reasoning on)</item>
+    </string-array>
+    <string-array name="verbosity_labels">
+        <item>1</item>
+        <item>2</item>
+        <item>3 - llama.cpp default</item>
+        <item>4 - very detailed</item>
+    </string-array>
 </resources>

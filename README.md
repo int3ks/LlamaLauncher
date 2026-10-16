@@ -27,6 +27,7 @@ Built and tested on a Honor MagicPad 3 Pro (Snapdragon 8 Elite Gen 5, Adreno 840
 - **Start / stop** from the app. Stop also ends a server started from a shell script on the same port.
 - Optional **autostart** with the last settings when the app opens.
 - Detects which options the installed llama.cpp build supports (`--load-mode`, `--no-jinja`, `--spec-type`, `--lora-scaled`, `--reasoning`) and falls back for older builds.
+- **English and German UI**, chosen automatically from the system language.
 - Plain Java and the Android SDK only, **no third-party libraries**. The UI is built in code (no layout XML).
 
 ## Requirements
@@ -68,10 +69,10 @@ Termux:Widget and Termux:API are **not** needed for the app.
 3. **Build and install the app.** Open the project in Android Studio or in [Code on the Go](https://github.com/appdevforall/CodeOnTheGo) on the device and build the debug APK.
    The Gradle files match Code on the Go 26.40–26.42 (Android Gradle Plugin 9.3.1, Gradle 9.6.1, compileSdk 36).
 
-4. **Open the app.** In the "Einrichtung" (setup) box at the top:
+4. **Open the app.** In the "Setup" box at the top:
    - grant "Run commands in Termux environment"
    - allow "All files access"
-   - tap "Testen": it must report that Termux and llama-server were found
+   - tap "Test": it must report that Termux and llama-server were found
 
 5. Pick a model and tap **Start**. The app switches to the log, then to the chat once the model is loaded.
 
@@ -103,14 +104,14 @@ log view     --reads log file (all files access)
 ## Good to know
 
 - Chats in the built-in web UI are stored in the app's WebView, separate from your browser.
-- Downloads (e.g. chat export) don't work in the built-in WebView. Use "Web-UI im Browser" in the settings for that.
+- Downloads (e.g. chat export) don't work in the built-in WebView. Use "Web UI in browser" in the settings for that.
 - The log is written to `Documents/LlamaLauncher/llama-server.log`.
-- The UI is in German.
+- The UI follows the system language: German on German systems, English everywhere else.
 
 ## Troubleshooting
 
-- **"Termux hat den Befehl abgelehnt"** (Termux rejected the command): `allow-external-apps = true` is missing, or `termux-reload-settings` was not run.
-- **llama-server not found:** check the path under "Pfade" (paths).
+- **"Termux rejected the command":** `allow-external-apps = true` is missing, or `termux-reload-settings` was not run.
+- **llama-server not found:** check the path under "Paths".
 - **No models listed:** "All files access" is not granted, or the models folder path is wrong.
 - **Build fails with `AAPT2 ... Daemon startup failed` in Code on the Go:** check whether the IDE's own `aapt2` is an arm64 binary:
   `od -A d -t x1 -N 20 /data/data/com.itsaky.androidide/files/home/android-sdk/build-tools/36.0.0/aapt2`.

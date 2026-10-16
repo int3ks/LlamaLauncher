@@ -244,7 +244,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         bar.setGravity(Gravity.CENTER_VERTICAL);
         bar.setPadding(dp(12), 0, dp(4), 0);
         TextView appTitle = new TextView(this);
-        appTitle.setText("Llama Launcher   ");
+        appTitle.setText(getString(R.string.app_name) + "   ");
         appTitle.setTextSize(16);
         appTitle.setTypeface(Typeface.DEFAULT_BOLD);
         bar.addView(appTitle);
@@ -253,10 +253,10 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         statusText.setSingleLine(true);
         statusText.setEllipsize(android.text.TextUtils.TruncateAt.END);
         bar.addView(statusText, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        btnChat = barButton("Chat", v -> showPage(PAGE_CHAT));
-        btnSettings = barButton("Einstellungen", v -> showPage(PAGE_SETTINGS));
-        btnLog = barButton("Log", v -> showPage(PAGE_LOG));
-        btnStartStop = barButton("Starten", v -> onStartStopClicked());
+        btnChat = barButton(getString(R.string.tab_chat), v -> showPage(PAGE_CHAT));
+        btnSettings = barButton(getString(R.string.tab_settings), v -> showPage(PAGE_SETTINGS));
+        btnLog = barButton(getString(R.string.tab_log), v -> showPage(PAGE_LOG));
+        btnStartStop = barButton(getString(R.string.btn_start), v -> onStartStopClicked());
         bar.addView(btnChat);
         bar.addView(btnSettings);
         bar.addView(btnLog);
@@ -309,7 +309,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         });
         web.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             if (url.startsWith("http")) openExternal(Uri.parse(url));
-            else toast("Herunterladen geht im eingebauten Browser nicht - bitte im Browser oeffnen.");
+            else toast(getString(R.string.toast_no_download));
         });
         f.addView(web, matchParent());
 
@@ -323,7 +323,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         chatOverlayText.setGravity(Gravity.CENTER);
         overlay.addView(chatOverlayText);
         Button go = new Button(this);
-        go.setText("Einstellungen");
+        go.setText(R.string.tab_settings);
         go.setAllCaps(false);
         go.setOnClickListener(v -> showPage(PAGE_SETTINGS));
         overlay.addView(go);
@@ -340,15 +340,15 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setPadding(dp(8), 0, dp(8), 0);
         cbLogFollow = new CheckBox(this);
-        cbLogFollow.setText("Ans Ende springen");
+        cbLogFollow.setText(R.string.log_follow);
         cbLogFollow.setChecked(true);
         row.addView(cbLogFollow);
         row.addView(new View(this), new LinearLayout.LayoutParams(0, 1, 1f));
-        row.addView(smallButton("Kopieren", v -> {
+        row.addView(smallButton(getString(R.string.btn_copy), v -> {
             copyToClipboard("llama-server.log", logText.getText().toString());
-            toast("Log kopiert");
+            toast(getString(R.string.toast_log_copied));
         }));
-        row.addView(smallButton("Aktualisieren", v -> refreshLog()));
+        row.addView(smallButton(getString(R.string.btn_refresh), v -> refreshLog()));
         l.addView(row);
 
         logScroll = new ScrollView(this);
@@ -374,7 +374,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         c.addView(setupBox);
 
         // --- Modell ---
-        c.addView(title("Modell"));
+        c.addView(title(getString(R.string.title_model)));
         modelAdapter = adapter(modelItems);
         spModel = new Spinner(this);
         spModel.setAdapter(modelAdapter);
@@ -383,15 +383,14 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         modelRow.setOrientation(LinearLayout.HORIZONTAL);
         modelRow.setGravity(Gravity.CENTER_VERTICAL);
         modelRow.addView(spModel, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        modelRow.addView(smallButton("Neu einlesen", v -> rescan()));
+        modelRow.addView(smallButton(getString(R.string.btn_rescan), v -> rescan()));
         c.addView(modelRow);
         modelInfo = hint("");
         c.addView(modelInfo);
 
         // --- MTP ---
-        c.addView(title("MTP-Drafter (Speculative Decoding)"));
-        c.addView(hint("Ein kleines Draft-Modell schlaegt Tokens vor, das grosse prueft sie nur. "
-                + "Kostet RAM; auf dem MagicPad 3 Pro bisher hoechstens gleich schnell. Muss zum Modell passen."));
+        c.addView(title(getString(R.string.title_mtp)));
+        c.addView(hint(getString(R.string.hint_mtp)));
         mtpAdapter = adapter(mtpItems);
         spMtp = new Spinner(this);
         spMtp.setAdapter(mtpAdapter);
@@ -402,19 +401,17 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         LinearLayout mtpBox = new LinearLayout(this);
         mtpBox.setOrientation(LinearLayout.VERTICAL);
         etDraftN = edit(InputType.TYPE_CLASS_NUMBER);
-        field(mtpBox, "Draft-Tokens pro Schritt (--spec-draft-n-max)", etDraftN,
-                "Mehr = mehr Gewinn, wenn sie stimmen, mehr Verlust, wenn nicht. llama.cpp-Standard: 3");
+        field(mtpBox, R.string.label_draft_n, etDraftN, R.string.hint_draft_n);
         cbDraftCpu = new CheckBox(this);
-        cbDraftCpu.setText("Drafter auf der CPU statt auf der GPU (-ngld 0)");
+        cbDraftCpu.setText(R.string.cb_draft_cpu);
         cbDraftCpu.setOnCheckedChangeListener((b, x) -> onFormChanged());
         mtpBox.addView(cbDraftCpu);
         mtpOptions = mtpBox;
         c.addView(mtpBox);
 
         // --- LoRA ---
-        c.addView(title("LoRA-Adapter"));
-        c.addView(hint("Legt beim Start eine kleine Aenderung ueber das Modell (z. B. Uncensored). "
-                + "Muss zum Basismodell passen, sonst bricht der Start ab."));
+        c.addView(title(getString(R.string.title_lora)));
+        c.addView(hint(getString(R.string.hint_lora)));
         loraAdapter = adapter(loraItems);
         spLora = new Spinner(this);
         spLora.setAdapter(loraAdapter);
@@ -425,12 +422,12 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         LinearLayout loraBox = new LinearLayout(this);
         loraBox.setOrientation(LinearLayout.VERTICAL);
         spLoraScale = spinner(ServerSettings.LORA_SCALES);
-        field(loraBox, "Staerke", spLoraScale, "1.00 = einfach, hoeher = staerker. AtomicChat empfiehlt 1.75 fuer die Uncensored-LoRA.");
+        field(loraBox, R.string.label_lora_scale, spLoraScale, R.string.hint_lora_scale);
         loraOptions = loraBox;
         c.addView(loraBox);
 
         // --- Grundeinstellungen ---
-        c.addView(title("Kontext und Speicher"));
+        c.addView(title(getString(R.string.title_context)));
         LinearLayout ctxBox = new LinearLayout(this);
         ctxBox.setOrientation(LinearLayout.HORIZONTAL);
         ctxBox.setGravity(Gravity.CENTER_VERTICAL);
@@ -450,44 +447,39 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
             public void onStartTrackingTouch(SeekBar b) { }
             public void onStopTrackingTouch(SeekBar b) { }
         });
-        field(c, "Kontextlaenge (-c)", ctxBox,
-                "1K bis 64K in 1024er-Schritten. Der Speicher fuer den KV-Cache wird beim Start komplett reserviert.");
-        spKv = spinner(ServerSettings.KV_LABELS);
-        field(c, "KV-Cache (-ctk/-ctv)", spKv, "Speichert den Chat-Verlauf im Modell komprimiert. Q6 gibt es nicht.");
+        field(c, R.string.label_ctx, ctxBox, R.string.hint_ctx);
+        spKv = spinner(getResources().getStringArray(R.array.kv_labels));
+        field(c, R.string.label_kv, spKv, R.string.hint_kv);
         etCache = edit(InputType.TYPE_CLASS_NUMBER);
-        field(c, "Prompt-Cache in MiB (--cache-ram)", etCache,
-                "Haelt andere Chats im RAM, damit ein Wechsel keinen neuen Prefill braucht. 0 = aus, 8192 = llama.cpp-Standard (zu viel bei 16 GB).");
+        field(c, R.string.label_cache, etCache, R.string.hint_cache);
         etCheckpoints = edit(InputType.TYPE_CLASS_NUMBER);
-        field(c, "Kontext-Checkpoints pro Slot (--ctx-checkpoints)", etCheckpoints,
-                "Bei Gemma 4 12B bis zu 170 MB je Checkpoint. llama.cpp-Standard: 32");
+        field(c, R.string.label_ckpt, etCheckpoints, R.string.hint_ckpt);
 
-        c.addView(title("GPU und CPU"));
-        spUb = spinner(ServerSettings.UB_LABELS);
-        field(c, "Micro-Batch (-ub)", spUb,
-                "Prompt-Tokens pro GPU-Job (nur Prefill). Groesser = schnellerer Prefill, aber mehr Ruckeln. Kein Einfluss auf das Decode-Tempo.");
+        c.addView(title(getString(R.string.title_gpu)));
+        spUb = spinner(getResources().getStringArray(R.array.ub_labels));
+        field(c, R.string.label_ub, spUb, R.string.hint_ub);
         String[] threadLabels = new String[8];
         for (int i = 0; i < 8; i++) threadLabels[i] = String.valueOf(i + 1);
         spThreads = spinner(threadLabels);
-        field(c, "CPU-Threads (-t)", spThreads, "Das Modell rechnet auf der GPU. Nicht alle 8 Kerne nehmen, sonst bleibt nichts fuer die UI.");
-        spLoad = spinner(ServerSettings.LOAD_LABELS);
-        field(c, "Load-Mode (--load-mode)", spLoad, "mlock wirkt ohne Root nicht (Limit 64 KB).");
+        field(c, R.string.label_threads, spThreads, R.string.hint_threads);
+        spLoad = spinner(getResources().getStringArray(R.array.load_labels));
+        field(c, R.string.label_load, spLoad, R.string.hint_load);
 
-        c.addView(title("Chat"));
-        spTemplate = spinner(ServerSettings.TEMPLATE_LABELS);
-        field(c, "Chat-Template", spTemplate, null);
-        spReasoning = spinner(ServerSettings.REASONING_LABELS);
-        field(c, "Reasoning / Thinking", spReasoning,
-                "\"aus\" wirkt nur mit Jinja und nur, wenn das Template einen Thinking-Schalter hat.");
+        c.addView(title(getString(R.string.title_chat)));
+        spTemplate = spinner(getResources().getStringArray(R.array.template_labels));
+        field(c, R.string.label_template, spTemplate, 0);
+        spReasoning = spinner(getResources().getStringArray(R.array.reasoning_labels));
+        field(c, R.string.label_reasoning, spReasoning, R.string.hint_reasoning);
         reasoningNote = hint("");
         c.addView(reasoningNote);
 
-        c.addView(title("Weiteres"));
-        spVerbosity = spinner(ServerSettings.VERBOSITY_LABELS);
-        field(c, "Log-Detailgrad (-lv)", spVerbosity, null);
+        c.addView(title(getString(R.string.title_more)));
+        spVerbosity = spinner(getResources().getStringArray(R.array.verbosity_labels));
+        field(c, R.string.label_verbosity, spVerbosity, 0);
         etExtra = edit(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        field(c, "Zusaetzliche Parameter", etExtra, "Werden ans Ende angehaengt, z. B. --temp 0.1 --top-k 50");
+        field(c, R.string.label_extra, etExtra, R.string.hint_extra);
 
-        c.addView(title("Kommandozeile"));
+        c.addView(title(getString(R.string.title_cmdline)));
         cmdPreview = new TextView(this);
         cmdPreview.setTypeface(Typeface.MONOSPACE);
         cmdPreview.setTextSize(12);
@@ -498,35 +490,35 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         actions.setOrientation(LinearLayout.HORIZONTAL);
         actions.setPadding(0, dp(12), 0, 0);
         Button start = new Button(this);
-        start.setText("Server starten");
+        start.setText(R.string.btn_start_server);
         start.setAllCaps(false);
         start.setOnClickListener(v -> startServer());
         actions.addView(start, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        actions.addView(smallButton("Vorgaben laden", v -> {
+        actions.addView(smallButton(getString(R.string.btn_load_defaults), v -> {
             applyToForm(new ServerSettings());
-            toast("Vorgaben geladen - gespeichert wird beim naechsten Start.");
+            toast(getString(R.string.toast_defaults_loaded));
         }));
         c.addView(actions);
         cbAutostart = new CheckBox(this);
-        cbAutostart.setText("Beim Oeffnen der App automatisch mit den letzten Einstellungen starten");
+        cbAutostart.setText(R.string.cb_autostart);
         cbAutostart.setOnCheckedChangeListener((b, x) -> Prefs.setAutostart(this, x));
         c.addView(cbAutostart);
 
         // --- Pfade ---
-        c.addView(title("Pfade"));
+        c.addView(title(getString(R.string.title_paths)));
         etModelDir = edit(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        field(c, "Modellordner", etModelDir, null);
+        field(c, R.string.label_model_dir, etModelDir, 0);
         etServer = edit(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        field(c, "llama-server (in Termux)", etServer, null);
+        field(c, R.string.label_server, etServer, 0);
         etLog = edit(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        field(c, "Log-Datei", etLog, "Termux schreibt hierhin, die App liest mit.");
+        field(c, R.string.label_log, etLog, R.string.hint_log);
         etPort = edit(InputType.TYPE_CLASS_NUMBER);
-        field(c, "Port", etPort, null);
+        field(c, R.string.label_port, etPort, 0);
         LinearLayout pathRow = new LinearLayout(this);
         pathRow.setOrientation(LinearLayout.HORIZONTAL);
-        pathRow.addView(smallButton("Pfade uebernehmen", v -> savePaths()));
-        pathRow.addView(smallButton("Web-UI im Browser", v -> openExternal(Uri.parse(serverUrl()))));
-        pathRow.addView(smallButton("Termux oeffnen", v -> openTermux()));
+        pathRow.addView(smallButton(getString(R.string.btn_save_paths), v -> savePaths()));
+        pathRow.addView(smallButton(getString(R.string.btn_webui_browser), v -> openExternal(Uri.parse(serverUrl()))));
+        pathRow.addView(smallButton(getString(R.string.btn_open_termux), v -> openTermux()));
         c.addView(pathRow);
 
         // Aenderungen an Textfeldern aktualisieren die Kommandozeile
@@ -596,6 +588,10 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
     }
 
     /** Eine Einstellungszeile: links Name und Erklaerung, rechts das Eingabefeld; Zeilen abwechselnd hinterlegt. */
+    private void field(LinearLayout parent, int labelRes, View input, int hintRes) {
+        field(parent, getString(labelRes), input, hintRes != 0 ? getString(hintRes) : null);
+    }
+
     private void field(LinearLayout parent, String label, View input, String hintText) {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -660,7 +656,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
 
     private void alert(String title, String msg) {
         if (isFinishing()) return;
-        new AlertDialog.Builder(this).setTitle(title).setMessage(msg).setPositiveButton("OK", null).show();
+        new AlertDialog.Builder(this).setTitle(title).setMessage(msg).setPositiveButton(android.R.string.ok, null).show();
     }
 
     private void copyToClipboard(String label, String text) {
@@ -672,14 +668,14 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         try {
             startActivity(new Intent(Intent.ACTION_VIEW, u));
         } catch (ActivityNotFoundException e) {
-            toast("Keine App zum Oeffnen gefunden.");
+            toast(getString(R.string.toast_no_app));
         }
     }
 
     private void openTermux() {
         Intent i = getPackageManager().getLaunchIntentForPackage(TermuxBridge.TERMUX_PACKAGE);
         if (i != null) startActivity(i);
-        else toast("Termux ist nicht installiert.");
+        else toast(getString(R.string.toast_no_termux));
     }
 
     // =======================================================================================
@@ -711,21 +707,21 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         boolean files = Environment.isExternalStorageManager();
         boolean allOk = termux && perm && files && features.known;
 
-        setupBox.addView(title(allOk ? "Einrichtung: alles bereit" : "Einrichtung"));
+        setupBox.addView(title(getString(allOk ? R.string.setup_title_ok : R.string.setup_title)));
         if (!allOk) {
-            setupBox.addView(check(termux, "Termux installiert", termux ? null : "Termux von GitHub installieren (wie im Wiki beschrieben)."));
-            LinearLayout r1 = check(perm, "Berechtigung \"Befehle in Termux ausfuehren\"", null);
-            if (termux && !perm) r1.addView(smallButton("Erteilen", v -> requestRunCommand()));
+            setupBox.addView(check(termux, getString(R.string.setup_termux), termux ? null : getString(R.string.setup_termux_hint)));
+            LinearLayout r1 = check(perm, getString(R.string.setup_perm), null);
+            if (termux && !perm) r1.addView(smallButton(getString(R.string.btn_grant), v -> requestRunCommand()));
             setupBox.addView(r1);
-            LinearLayout r2 = check(files, "Zugriff auf alle Dateien (Modellordner, Log)", null);
-            if (!files) r2.addView(smallButton("Erlauben", v -> requestAllFiles()));
+            LinearLayout r2 = check(files, getString(R.string.setup_files), null);
+            if (!files) r2.addView(smallButton(getString(R.string.btn_allow), v -> requestAllFiles()));
             setupBox.addView(r2);
         }
-        LinearLayout r3 = check(features.known, "Termux-Test (allow-external-apps, llama-server)", checkMessage.isEmpty() ? null : checkMessage);
-        if (perm) r3.addView(smallButton(features.known ? "Erneut testen" : "Testen", v -> runCheck()));
+        LinearLayout r3 = check(features.known, getString(R.string.setup_test), checkMessage.isEmpty() ? null : checkMessage);
+        if (perm) r3.addView(smallButton(getString(features.known ? R.string.btn_retest : R.string.btn_test), v -> runCheck()));
         setupBox.addView(r3);
         if (!allOk) {
-            setupBox.addView(hint("Einmalig in Termux eingeben, damit Termux Befehle von dieser App annimmt:"));
+            setupBox.addView(hint(getString(R.string.setup_props_hint)));
             String cmd = "mkdir -p ~/.termux && echo \"allow-external-apps = true\" >> ~/.termux/termux.properties && termux-reload-settings";
             TextView tv = new TextView(this);
             tv.setText(cmd);
@@ -734,11 +730,11 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
             tv.setTextIsSelectable(true);
             setupBox.addView(tv);
             LinearLayout r4 = new LinearLayout(this);
-            r4.addView(smallButton("Befehl kopieren", v -> {
+            r4.addView(smallButton(getString(R.string.btn_copy_cmd), v -> {
                 copyToClipboard("termux", cmd);
-                toast("Kopiert - in Termux mit Strg+Alt+V einfuegen.");
+                toast(getString(R.string.toast_copied_termux));
             }));
-            r4.addView(smallButton("Termux oeffnen", v -> openTermux()));
+            r4.addView(smallButton(getString(R.string.btn_open_termux), v -> openTermux()));
             setupBox.addView(r4);
         }
     }
@@ -769,7 +765,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
             runCheck();
         } else {
             // Dialog abgelehnt oder nicht angezeigt -> App-Einstellungen oeffnen
-            toast("Unter Berechtigungen > Zusaetzliche Berechtigungen \"Befehle in Termux ausfuehren\" erlauben.");
+            toast(getString(R.string.toast_perm_settings));
             startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName())));
         }
     }
@@ -786,7 +782,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
     private void runCheck() {
         String err = TermuxBridge.runScript(this, TermuxBridge.CMD_CHECK, "Llama Launcher: Test",
                 TermuxBridge.SCRIPT_CHECK, List.of(etServer.getText().toString().trim()));
-        checkMessage = err != null ? err : "Test laeuft ...";
+        checkMessage = err != null ? err : getString(R.string.check_running);
         refreshSetup();
     }
 
@@ -797,7 +793,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
     private void rescan() {
         modelDir = new File(etModelDir.getText().toString().trim());
         final File dir = modelDir;
-        modelInfo.setText("Lese Modellordner ...");
+        modelInfo.setText(R.string.scan_reading);
         io.execute(() -> {
             ModelScanner.Result r = ModelScanner.scan(dir);
             ui.post(() -> onScanDone(r));
@@ -811,7 +807,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         for (File f : r.models) {
             modelItems.add(ModelScanner.displayName(f, modelDir) + "   (" + ModelScanner.humanSize(f.length()) + ")");
         }
-        if (modelItems.isEmpty()) modelItems.add("(keine Modelle gefunden)");
+        if (modelItems.isEmpty()) modelItems.add(getString(R.string.no_models));
         modelAdapter.notifyDataSetChanged();
         int sel = 0;
         String last = Prefs.lastModel(this);
@@ -821,8 +817,8 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         onModelSelected();
         scanDone = true;
         tryAutostart();
-        if (r.error != null) modelInfo.setText(r.error);
-        else if (!Environment.isExternalStorageManager()) modelInfo.setText("Ohne \"Zugriff auf alle Dateien\" sieht die App keine .gguf-Dateien.");
+        if (r.error != 0) modelInfo.setText(getString(r.error, r.errorPath));
+        else if (!Environment.isExternalStorageManager()) modelInfo.setText(R.string.scan_no_files_perm);
     }
 
     private File selectedModel() {
@@ -837,8 +833,8 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         if (m != null) {
             s = Prefs.preset(this, m.getName());
             File mm = ModelScanner.findMmproj(m);
-            info.append(s != null ? "Gespeicherte Einstellungen dieses Modells geladen." : "Noch keine gespeicherten Einstellungen - Vorgaben geladen.");
-            if (mm != null) info.append("\nmmproj (Vision) wird mitgeladen: ").append(mm.getName());
+            info.append(getString(s != null ? R.string.preset_loaded : R.string.preset_none));
+            if (mm != null) info.append('\n').append(getString(R.string.mmproj_loaded, mm.getName()));
         }
         if (s == null) s = new ServerSettings();
         rebuildMtpLoraLists(m);
@@ -851,16 +847,16 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         String mName = model != null ? model.getName() : "";
         String tag = ModelScanner.sizeTag(mName);
         mtpItems.clear();
-        mtpItems.add("aus");
+        mtpItems.add(getString(R.string.mtp_off));
         for (File f : scan.mtps) {
             mtpItems.add(ModelScanner.displayName(f, modelDir) + "   (" + ModelScanner.humanSize(f.length()) + ")"
-                    + (ModelScanner.mtpMatches(f.getName(), tag) ? "   <- passt zum Modell" : ""));
+                    + (ModelScanner.mtpMatches(f.getName(), tag) ? getString(R.string.mark_mtp_match) : ""));
         }
         loraItems.clear();
-        loraItems.add("keine");
+        loraItems.add(getString(R.string.lora_none));
         for (File f : scan.loras) {
             loraItems.add(ModelScanner.displayName(f, modelDir) + "   (" + ModelScanner.humanSize(f.length()) + ")"
-                    + (ModelScanner.loraMatches(f.getName(), mName) ? "   <- passt vermutlich zum Modell" : ""));
+                    + (ModelScanner.loraMatches(f.getName(), mName) ? getString(R.string.mark_lora_match) : ""));
         }
         mtpAdapter.notifyDataSetChanged();
         loraAdapter.notifyDataSetChanged();
@@ -898,12 +894,12 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         spVerbosity.setSelection(Math.min(3, Math.max(0, s.verbosity - 1)), false);
         int mtp = s.mtpPath.isEmpty() ? -1 : indexOfPath(scan.mtps, s.mtpPath);
         spMtp.setSelection(mtp + 1, false);
-        mtpNote.setText(!s.mtpPath.isEmpty() && mtp < 0 ? "Gespeicherter MTP-Drafter fehlt - MTP aus." : "");
+        mtpNote.setText(!s.mtpPath.isEmpty() && mtp < 0 ? getString(R.string.note_saved_mtp_missing) : "");
         etDraftN.setText(String.valueOf(s.draftN));
         cbDraftCpu.setChecked(s.draftCpu);
         int lora = s.loraPath.isEmpty() ? -1 : indexOfPath(scan.loras, s.loraPath);
         spLora.setSelection(lora + 1, false);
-        loraNote.setText(!s.loraPath.isEmpty() && lora < 0 ? "Gespeicherte LoRA fehlt - LoRA aus." : "");
+        loraNote.setText(!s.loraPath.isEmpty() && lora < 0 ? getString(R.string.note_saved_lora_missing) : "");
         int sc = indexOf(ServerSettings.LORA_SCALES, s.loraScale);
         spLoraScale.setSelection(sc >= 0 ? sc : 3, false);
         etExtra.setText(s.extraArgs);
@@ -962,28 +958,28 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         loraOptions.setVisibility(spLora.getSelectedItemPosition() > 0 ? View.VISIBLE : View.GONE);
         boolean jinja = spTemplate.getSelectedItemPosition() == 0;
         spReasoning.setEnabled(jinja && features.reasoning);
-        reasoningNote.setText(!jinja ? "Mit --no-jinja wirkt --reasoning nicht."
-                : !features.reasoning ? "Dieser llama.cpp-Build kennt kein --reasoning." : "");
+        reasoningNote.setText(!jinja ? getString(R.string.note_nojinja_reasoning)
+                : !features.reasoning ? getString(R.string.note_no_reasoning) : "");
         spMtp.setEnabled(features.specType);
-        if (!features.specType) mtpNote.setText("Dieser llama.cpp-Build kennt kein --spec-type.");
+        if (!features.specType) mtpNote.setText(R.string.note_no_spec);
         else if (spMtp.getSelectedItemPosition() > 0) mtpNote.setText("");
         spLora.setEnabled(features.loraScaled);
-        if (!features.loraScaled) loraNote.setText("Dieser llama.cpp-Build kennt kein --lora-scaled.");
+        if (!features.loraScaled) loraNote.setText(R.string.note_no_lora);
         else if (spLora.getSelectedItemPosition() > 0) loraNote.setText("");
 
         File m = selectedModel();
         ServerSettings s = readForm(false);
         if (m == null) {
-            cmdPreview.setText("(kein Modell ausgewaehlt)");
+            cmdPreview.setText(R.string.cmd_no_model);
             return;
         }
         File mm = ModelScanner.findMmproj(m);
         ServerSettings.Built b = s.buildArgs(etServer.getText().toString().trim(), m.getPath(),
                 mm != null ? mm.getPath() : null, currentPort(), features);
         StringBuilder t = new StringBuilder(ServerSettings.toShellLine(b.args));
-        if (b.error != null) t.append("\n\nFehler: ").append(b.error);
-        for (String n : b.notes) t.append("\nHinweis: ").append(n);
-        if (!features.known) t.append("\n\nHinweis: llama.cpp-Build noch nicht getestet - es wird ein aktueller Build angenommen.");
+        if (b.error != 0) t.append("\n\n").append(getString(R.string.cmd_error, getString(b.error)));
+        for (int n : b.notes) t.append('\n').append(getString(R.string.cmd_note, getString(n)));
+        if (!features.known) t.append("\n\n").append(getString(R.string.cmd_untested));
         cmdPreview.setText(t.toString());
     }
 
@@ -991,7 +987,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         int port = currentPort();
         Prefs.savePaths(this, etModelDir.getText().toString().trim(), etServer.getText().toString().trim(),
                 etLog.getText().toString().trim(), port);
-        toast("Pfade gespeichert");
+        toast(getString(R.string.toast_paths_saved));
         rescan();
         if (TermuxBridge.hasRunCommandPermission(this)) runCheck();
     }
@@ -1008,13 +1004,13 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
     private void startServer() {
         if (!TermuxBridge.isTermuxInstalled(this) || !TermuxBridge.hasRunCommandPermission(this)) {
             showPage(PAGE_SETTINGS);
-            alert("Einrichtung fehlt", "Bitte zuerst oben unter \"Einrichtung\" Termux und die Berechtigung einrichten.");
+            alert(getString(R.string.dlg_setup_missing), getString(R.string.msg_setup_missing_start));
             return;
         }
         File model = selectedModel();
         if (model == null) {
             showPage(PAGE_SETTINGS);
-            alert("Kein Modell", "Im Modellordner wurde kein Modell gefunden.");
+            alert(getString(R.string.dlg_no_model), getString(R.string.msg_no_model));
             return;
         }
         ServerSettings s = readForm(true);
@@ -1022,20 +1018,20 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         File mm = ModelScanner.findMmproj(model);
         String serverPath = etServer.getText().toString().trim();
         ServerSettings.Built b = s.buildArgs(serverPath, model.getPath(), mm != null ? mm.getPath() : null, currentPort(), features);
-        if (b.error != null) {
-            alert("Start nicht moeglich", b.error);
+        if (b.error != 0) {
+            alert(getString(R.string.dlg_cannot_start), getString(b.error));
             return;
         }
         Runnable doStart = () -> launch(model, s, b);
         if (state == State.READY || state == State.LOADING || state == State.STARTING) {
             new AlertDialog.Builder(this)
-                    .setTitle("Server laeuft bereits")
-                    .setMessage("Laufenden Server beenden und mit diesen Einstellungen neu starten?")
-                    .setPositiveButton("Neu starten", (d, w) -> {
+                    .setTitle(R.string.dlg_running)
+                    .setMessage(R.string.msg_restart)
+                    .setPositiveButton(R.string.btn_restart, (d, w) -> {
                         pendingStart = doStart;
                         stopServer(true);
                     })
-                    .setNegativeButton("Abbrechen", null)
+                    .setNegativeButton(R.string.btn_cancel, null)
                     .show();
         } else {
             doStart.run();
@@ -1052,10 +1048,10 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         String err = TermuxBridge.runScript(this, cmdId, "llama-server (Llama Launcher)",
                 TermuxBridge.SCRIPT_START, args);
         if (err != null) {
-            alert("Start fehlgeschlagen", err);
+            alert(getString(R.string.dlg_start_failed), err);
             return;
         }
-        for (String n : b.notes) toast(n);
+        for (int n : b.notes) toast(getString(n));
         startCmdId = cmdId;
         state = State.STARTING;
         startRequestedAt = System.currentTimeMillis();
@@ -1071,14 +1067,14 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
 
     private void stopServer(boolean forRestart) {
         if (!TermuxBridge.hasRunCommandPermission(this)) {
-            alert("Einrichtung fehlt", "Ohne die Berechtigung \"Befehle in Termux ausfuehren\" kann die App den Server nicht beenden.");
+            alert(getString(R.string.dlg_setup_missing), getString(R.string.msg_setup_missing_stop));
             return;
         }
-        String err = TermuxBridge.runScript(this, TermuxBridge.CMD_STOP, "llama-server stoppen (Llama Launcher)",
+        String err = TermuxBridge.runScript(this, TermuxBridge.CMD_STOP, "Stop llama-server (Llama Launcher)",
                 TermuxBridge.SCRIPT_STOP, List.of(String.valueOf(currentPort())));
         if (err != null) {
             pendingStart = null;
-            alert("Stoppen fehlgeschlagen", err);
+            alert(getString(R.string.dlg_stop_failed), err);
             return;
         }
         if (!forRestart) pendingStart = null;
@@ -1101,23 +1097,21 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         if (TermuxBridge.CMD_CHECK.equals(cmd)) {
             String out = result.getString(TermuxBridge.RESULT_STDOUT, "");
             if (failed) {
-                checkMessage = "Termux hat den Befehl abgelehnt: " + shorten(errmsg)
-                        + "\n     Meist fehlt allow-external-apps (Befehl unten).";
+                checkMessage = getString(R.string.check_rejected, shorten(errmsg));
             } else if (out.contains("NO_SERVER")) {
-                checkMessage = "Termux OK, aber llama-server fehlt unter " + etServer.getText().toString().trim()
-                        + " (build-llama-vk.sh ausgefuehrt?)";
+                checkMessage = getString(R.string.check_no_server, etServer.getText().toString().trim());
             } else if (out.contains("SERVER_OK")) {
                 features = ServerSettings.Features.fromCheckOutput(out);
                 Prefs.saveFeatures(this, features);
-                checkMessage = "Termux OK, llama-server gefunden." + featureSummary();
+                checkMessage = getString(R.string.check_ok, featureSummary());
             } else {
-                checkMessage = "Unerwartete Antwort: " + shorten(out + " " + result.getString(TermuxBridge.RESULT_STDERR, ""));
+                checkMessage = getString(R.string.check_unexpected, shorten(out + " " + result.getString(TermuxBridge.RESULT_STDERR, "")));
             }
             refreshSetup();
             onFormChanged();
         } else if (TermuxBridge.CMD_STOP.equals(cmd)) {
-            if (failed) alert("Stoppen fehlgeschlagen", shorten(errmsg));
-            else if (result.getInt(TermuxBridge.RESULT_EXIT_CODE, 0) != 0) toast("llama-server liess sich nicht beenden.");
+            if (failed) alert(getString(R.string.dlg_stop_failed), shorten(errmsg));
+            else if (result.getInt(TermuxBridge.RESULT_EXIT_CODE, 0) != 0) toast(getString(R.string.toast_stop_failed));
         } else if (cmd != null && cmd.startsWith(TermuxBridge.CMD_START)) {
             if (startCmdId == null) {
                 // Start stammt aus einer frueheren Sitzung der App: nur melden, wenn der Server wirklich weg ist
@@ -1137,7 +1131,8 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         if (!features.specType) missing.add("--spec-type");
         if (!features.loraScaled) missing.add("--lora-scaled");
         if (!features.reasoning) missing.add("--reasoning");
-        return missing.isEmpty() ? " Alle Optionen vorhanden." : " Fehlt im Build: " + String.join(", ", missing);
+        return missing.isEmpty() ? getString(R.string.features_all)
+                : getString(R.string.features_missing, String.join(", ", missing));
     }
 
     private static String shorten(String s) {
@@ -1152,8 +1147,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         if (errmsg != null && !errmsg.trim().isEmpty()) {
             if (state == State.STARTING) state = State.STOPPED;
             updateStatus();
-            alert("Termux hat den Start abgelehnt", shorten(errmsg)
-                    + "\n\nMeist fehlt in Termux die Zeile allow-external-apps = true (siehe Einrichtung).");
+            alert(getString(R.string.dlg_start_rejected), getString(R.string.msg_start_rejected, shorten(errmsg)));
             return;
         }
         boolean expected = !whileClosed && userStopped && System.currentTimeMillis() - stopRequestedAt < 60_000;
@@ -1165,18 +1159,18 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
                 ? result.getInt(TermuxBridge.RESULT_EXIT_CODE) : Integer.MIN_VALUE;
         String reason;
         switch (code) {
-            case 0: reason = "normal beendet"; break;
-            case 90: reason = "Log-Ordner konnte nicht angelegt werden (Speicherzugriff von Termux?)"; break;
-            case 91: reason = "llama-server wurde nicht gefunden (Pfad unter \"Pfade\" pruefen)"; break;
-            case 134: reason = "abgebrochen (SIGABRT) - z. B. GGML-Fehler oder GPU \"device lost\""; break;
-            case 137: reason = "vom System beendet (SIGKILL) - oft Speichermangel"; break;
-            case 139: reason = "abgestuerzt (SIGSEGV)"; break;
-            case Integer.MIN_VALUE: reason = "ohne Exit-Code"; break;
-            default: reason = "Exit-Code " + code; break;
+            case 0: reason = getString(R.string.exit_normal); break;
+            case 90: reason = getString(R.string.exit_90); break;
+            case 91: reason = getString(R.string.exit_91); break;
+            case 134: reason = getString(R.string.exit_134); break;
+            case 137: reason = getString(R.string.exit_137); break;
+            case 139: reason = getString(R.string.exit_139); break;
+            case Integer.MIN_VALUE: reason = getString(R.string.exit_none); break;
+            default: reason = getString(R.string.exit_code, code); break;
         }
         String tail = lastLines(readLogTail(etLog.getText().toString().trim(), 8192), 15);
-        alert(whileClosed ? "llama-server wurde inzwischen beendet" : "llama-server wurde beendet",
-                reason + (tail.isEmpty() ? "" : "\n\nLetzte Log-Zeilen:\n" + tail));
+        alert(getString(whileClosed ? R.string.dlg_exited_closed : R.string.dlg_exited),
+                reason + (tail.isEmpty() ? "" : "\n\n" + getString(R.string.last_log_lines) + "\n" + tail));
     }
 
     // =======================================================================================
@@ -1324,48 +1318,48 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         String text;
         switch (state) {
             case READY:
-                text = "● Bereit" + model;
+                text = getString(R.string.status_ready) + model;
                 color = Color.rgb(0x2E, 0x9E, 0x4F);
                 break;
             case LOADING:
-                text = "● Laedt Modell ..." + model;
+                text = getString(R.string.status_loading) + model;
                 color = Color.rgb(0xF5, 0x9E, 0x0B);
                 break;
             case STARTING:
-                text = "● Startet ..." + model;
+                text = getString(R.string.status_starting) + model;
                 color = Color.rgb(0xF5, 0x9E, 0x0B);
                 break;
             case STOPPING:
-                text = "● Wird beendet ...";
+                text = getString(R.string.status_stopping);
                 color = Color.rgb(0xF5, 0x9E, 0x0B);
                 break;
             case STOPPED:
-                text = "● Gestoppt";
+                text = getString(R.string.status_stopped);
                 color = Color.GRAY;
                 runningModelName = null;
                 break;
             default:
-                text = "● Pruefe ...";
+                text = getString(R.string.status_checking);
                 color = Color.GRAY;
                 break;
         }
         statusText.setText(text);
         statusText.setTextColor(color);
         boolean running = state == State.READY || state == State.LOADING || state == State.STARTING;
-        btnStartStop.setText(running ? "Stoppen" : "Starten");
+        btnStartStop.setText(running ? R.string.btn_stop : R.string.btn_start);
         btnStartStop.setEnabled(state != State.STOPPING && state != State.UNKNOWN);
         if (chatOverlay != null) {
             chatOverlay.setVisibility(state == State.READY ? View.GONE : View.VISIBLE);
             switch (state) {
                 case LOADING:
                 case STARTING:
-                    chatOverlayText.setText("Das Modell wird geladen ...\nDer Fortschritt steht unter \"Log\".");
+                    chatOverlayText.setText(R.string.overlay_loading);
                     break;
                 case STOPPING:
-                    chatOverlayText.setText("Server wird beendet ...");
+                    chatOverlayText.setText(R.string.overlay_stopping);
                     break;
                 default:
-                    chatOverlayText.setText("Der Server laeuft nicht.\nOben auf \"Starten\" tippen oder unter \"Einstellungen\" ein Modell waehlen.");
+                    chatOverlayText.setText(R.string.overlay_stopped);
                     break;
             }
         }
@@ -1394,7 +1388,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         io.execute(() -> {
             String t = readLogTail(path, 48 * 1024);
             ui.post(() -> {
-                logText.setText(t.isEmpty() ? "(Log ist leer oder noch nicht vorhanden: " + etLog.getText() + ")" : t);
+                logText.setText(t.isEmpty() ? getString(R.string.log_empty, etLog.getText().toString()) : t);
                 if (cbLogFollow.isChecked()) logScroll.post(() -> logScroll.fullScroll(View.FOCUS_DOWN));
             });
         });
@@ -1417,7 +1411,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
             }
             return s.replaceAll("\u001B\\[[;\\d]*m", "");
         } catch (IOException e) {
-            return Environment.isExternalStorageManager() ? "" : "(Kein Zugriff auf die Log-Datei - \"Zugriff auf alle Dateien\" erlauben)";
+            return Environment.isExternalStorageManager() ? "" : getString(R.string.log_no_access);
         }
     }
 
@@ -1443,7 +1437,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
             return true;
         } catch (ActivityNotFoundException e) {
             fileCallback = null;
-            toast("Keine App zur Dateiauswahl gefunden.");
+            toast(getString(R.string.toast_no_file_app));
             return false;
         }
     }
