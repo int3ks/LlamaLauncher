@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Web-UI von llama-server ueber http://127.0.0.1 laden -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Befehle in Termux ausfuehren (RUN_COMMAND-Schnittstelle von Termux) -->
+    <uses-permission android:name="com.termux.permission.RUN_COMMAND" />
+
+    <!-- Modellordner und Server-Log im Android-Speicher lesen (.gguf sind keine Mediendateien) -->
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+    <!-- Ab Android 11 muss die App Termux "sehen" duerfen -->
+    <queries>
+        <package android:name="com.termux" />
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.DeviceDefault.DayNight"
+        android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Empfaengt die Ergebnisse der Termux-Befehle (ueber PendingIntent, daher nicht exportiert) -->
+        <receiver
+            android:name=".TermuxResultReceiver"
+            android:exported="false" />
+
+    </application>
+</manifest>
