@@ -5,7 +5,9 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.Typeface;
@@ -57,6 +59,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -77,6 +80,8 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
 
     private static final int REQ_PERMISSION = 1;
     private static final int REQ_FILE = 2;
+
+    private static final String[] LANGUAGES = {"", "de", "en"}; // wie R.array.language_labels
 
     private static final long START_TIMEOUT_MS = 180_000;
     private static final long STOP_TIMEOUT_MS = 15_000;
@@ -104,6 +109,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
     private EditText etCache, etCheckpoints, etDraftN, etExtra;
     private EditText etModelDir, etServer, etLog, etPort;
     private CheckBox cbDraftCpu, cbAutostart;
+    private Spinner spLanguage;
     private View mtpOptions, loraOptions;
     private TextView modelInfo, mtpNote, loraNote, reasoningNote, cmdPreview;
 
@@ -133,10 +139,30 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
     private boolean scanDone;
     private boolean autostartPending;
     private ValueCallback<Uri[]> fileCallback;
+    private boolean restored;           // neu aufgebaut (z. B. nach Sprachwechsel), nicht frisch geoeffnet
 
     // =======================================================================================
     // Lebenszyklus
     // =======================================================================================
+
+    /** Sprache aus den Einstellungen anwenden ("" = Systemsprache). */
+    @Override
+    protected void attachBaseContext(Context base) {
+        String lang = Prefs.language(base);
+        if (!lang.isEmpty()) {
+            Configuration cfg = new Configuration(base.getResources().getConfiguration());
+            cfg.setLocale(Locale.forLanguageTag(lang));
+            base = base.createConfigurationContext(cfg);
+        }
+        super.attachBaseContext(base);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putInt("page", page);
+        out.putString("startCmdId", startCmdId);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +181,9 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         etPort.setText(String.valueOf(Prefs.port(this)));
         cbAutostart.setChecked(Prefs.autostart(this));
 
-        showPage(PAGE_SETTINGS);
+        restored = savedInstanceState != null;
+        if (restored) startCmdId = savedInstanceState.getString("startCmdId");
+        showPage(restored ? savedInstanceState.getInt("page", PAGE_SETTINGS) : PAGE_SETTINGS);
         rescan();
 
         Bundle pending = Prefs.takePendingExit(this);
@@ -503,6 +531,20 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         cbAutostart.setText(R.string.cb_autostart);
         cbAutostart.setOnCheckedChangeListener((b, x) -> Prefs.setAutostart(this, x));
         c.addView(cbAutostart);
+
+        // --- App ---
+        c.addView(title(getString(R.string.title_app)));
+        spLanguage = new Spinner(this);
+        spLanguage.setAdapter(adapter(new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.language_labels)))));
+        spLanguage.setSelection(Math.max(0, indexOf(LANGUAGES, Prefs.language(this))), false);
+        spLanguage.setOnItemSelectedListener(new SimpleSelect(() -> {
+            String lang = LANGUAGES[Math.max(0, spLanguage.getSelectedItemPosition())];
+            if (!lang.equals(Prefs.language(this))) {
+                Prefs.setLanguage(this, lang);
+                recreate();
+            }
+        }));
+        field(c, R.string.label_language, spLanguage, R.string.hint_language);
 
         // --- Pfade ---
         c.addView(title(getString(R.string.title_paths)));
@@ -883,7 +925,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         updateCtxLabel();
         spKv.setSelection(Math.max(0, indexOf(ServerSettings.KV_TYPES, s.kv)), false);
         int ub = indexOf(ServerSettings.UB_VALUES, s.ub);
-        spUb.setSelection(ub >= 0 ? ub : 1, false);
+        spUb.setSelection(ub >= 0 ? ub : 0, false);
         etCache.setText(String.valueOf(s.cacheRam));
         etCheckpoints.setText(String.valueOf(s.checkpoints));
         spThreads.setSelection(Math.min(7, Math.max(0, s.threads - 1)), false);
@@ -1243,6 +1285,7 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
     }
 
     private void onFirstProbe() {
+        if (restored) return; // nach dem Neuaufbau: Seite behalten, kein Autostart
         if (state == State.READY) {
             showPage(PAGE_CHAT);
         } else if (state == State.STOPPED && cbAutostart.isChecked()) {

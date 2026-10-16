@@ -27,7 +27,7 @@ Built and tested on a Honor MagicPad 3 Pro (Snapdragon 8 Elite Gen 5, Adreno 840
 - **Start / stop** from the app. Stop also ends a server started from a shell script on the same port.
 - Optional **autostart** with the last settings when the app opens.
 - Detects which options the installed llama.cpp build supports (`--load-mode`, `--no-jinja`, `--spec-type`, `--lora-scaled`, `--reasoning`) and falls back for older builds.
-- **English and German UI**, chosen automatically from the system language.
+- **English and German UI**, chosen automatically from the system language or set manually in the settings.
 - Plain Java and the Android SDK only, **no third-party libraries**. The UI is built in code (no layout XML).
 
 ## Requirements
@@ -106,7 +106,8 @@ log view     --reads log file (all files access)
 - Chats in the built-in web UI are stored in the app's WebView, separate from your browser.
 - Downloads (e.g. chat export) don't work in the built-in WebView. Use "Web UI in browser" in the settings for that.
 - The log is written to `Documents/LlamaLauncher/llama-server.log`.
-- The UI follows the system language: German on German systems, English everywhere else.
+- The UI follows the system language (German on German systems, English everywhere else). Under "App" > "Language" in the settings you can set German or English manually.
+- The default micro-batch is `-ub 32`: prefill is a little slower, but the UI lags much less at full context.
 
 ## Troubleshooting
 

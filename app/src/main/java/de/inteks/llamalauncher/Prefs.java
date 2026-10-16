@@ -51,6 +51,15 @@ final class Prefs {
         sp(c).edit().putString("lastModel", path).apply();
     }
 
+    /** Sprache der Oberflaeche: "" = Systemsprache, sonst "de" oder "en". */
+    static String language(Context c) {
+        return sp(c).getString("language", "");
+    }
+
+    static void setLanguage(Context c, String lang) {
+        sp(c).edit().putString("language", lang).commit(); // sofort, die Activity wird gleich neu aufgebaut
+    }
+
     static boolean autostart(Context c) {
         return sp(c).getBoolean("autostart", false);
     }

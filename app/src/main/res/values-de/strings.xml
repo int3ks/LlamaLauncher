@@ -152,6 +152,9 @@
     <string name="toast_no_file_app">Keine App zur Dateiauswahl gefunden.</string>
     <string name="err_no_perm">Die App hat noch keine Berechtigung, Befehle in Termux auszuführen.</string>
     <string name="err_rejected">Termux hat den Befehl abgelehnt (Berechtigung?): %1$s</string>
+    <string name="title_app">App</string>
+    <string name="label_language">Sprache</string>
+    <string name="hint_language">Überschreibt die Systemsprache. Die Oberfläche wird neu aufgebaut, ein laufender Server läuft weiter.</string>
     <string name="err_start_termux">Termux konnte nicht gestartet werden: %1$s</string>
     <string-array name="kv_labels">
         <item>f16 – keine Quantisierung, doppelter Speicher</item>
@@ -160,9 +163,9 @@
         <item>q4_0 – am kleinsten, Verlust bei langen Chats möglich</item>
     </string-array>
     <string-array name="ub_labels">
-        <item>32 – stabil</item>
-        <item>64 – stabil, guter Kompromiss (empfohlen)</item>
-        <item>128 – stabil, schnellerer Prefill</item>
+        <item>32 – stabil, am wenigsten Ruckeln (empfohlen)</item>
+        <item>64 – stabil, schnellerer Prefill, ruckelt bei vollem Kontext spürbar</item>
+        <item>128 – stabil, noch schnellerer Prefill, mehr Ruckeln</item>
         <item>256 – nicht getestet</item>
         <item>512 – llama.cpp-Standard; auf Adreno 840 + Gemma 4 + FA: GPU-Absturz</item>
     </string-array>
@@ -182,6 +185,11 @@
         <item>auto – Standard, Thinking an, wenn das Template es kann</item>
         <item>aus (--reasoning off) – wenn die Web-UI es nicht abschaltet</item>
         <item>an (--reasoning on)</item>
+    </string-array>
+    <string-array name="language_labels">
+        <item>Systemsprache</item>
+        <item>Deutsch</item>
+        <item>English</item>
     </string-array>
     <string-array name="verbosity_labels">
         <item>1</item>

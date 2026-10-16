@@ -153,6 +153,9 @@
     <string name="toast_no_file_app">No app found to pick files.</string>
     <string name="err_no_perm">The app doesn\'t have permission to run commands in Termux yet.</string>
     <string name="err_rejected">Termux rejected the command (permission?): %1$s</string>
+    <string name="title_app">App</string>
+    <string name="label_language">Language</string>
+    <string name="hint_language">Overrides the system language. The screen is rebuilt; a running server keeps running.</string>
     <string name="err_start_termux">Termux could not be started: %1$s</string>
     <string-array name="kv_labels">
         <item>f16 - no quantization, twice the memory</item>
@@ -161,9 +164,9 @@
         <item>q4_0 - smallest, loss possible in long chats</item>
     </string-array>
     <string-array name="ub_labels">
-        <item>32 - stable</item>
-        <item>64 - stable, good compromise (recommended)</item>
-        <item>128 - stable, faster prefill</item>
+        <item>32 - stable, least lag (recommended)</item>
+        <item>64 - stable, faster prefill, noticeable lag at full context</item>
+        <item>128 - stable, even faster prefill, more lag</item>
         <item>256 - not tested</item>
         <item>512 - llama.cpp default; GPU crash on Adreno 840 + Gemma 4 + FA</item>
     </string-array>
@@ -183,6 +186,11 @@
         <item>auto - default, thinking on if the template supports it</item>
         <item>off (--reasoning off) - if the web UI doesn\'t switch it off</item>
         <item>on (--reasoning on)</item>
+    </string-array>
+    <string-array name="language_labels">
+        <item>System language</item>
+        <item>Deutsch</item>
+        <item>English</item>
     </string-array>
     <string-array name="verbosity_labels">
         <item>1</item>

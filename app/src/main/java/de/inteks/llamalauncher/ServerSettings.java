@@ -33,7 +33,7 @@ final class ServerSettings {
     // Vorgaben dieser App (wie in llama-start.sh)
     int ctx = 8192;
     String kv = "q8_0";
-    int ub = 64;
+    int ub = 32;
     int cacheRam = 2048;
     int threads = 6;
     String loadMode = "none";
