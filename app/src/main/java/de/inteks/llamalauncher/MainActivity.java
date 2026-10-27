@@ -414,6 +414,32 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         setupBox.setOrientation(LinearLayout.VERTICAL);
         c.addView(setupBox);
 
+        // --- Start & Kommandozeile (oben, meistens muss nichts eingestellt werden) ---
+        c.addView(title(getString(R.string.title_cmdline)));
+        cmdPreview = new TextView(this);
+        cmdPreview.setTypeface(Typeface.MONOSPACE);
+        cmdPreview.setTextSize(12);
+        cmdPreview.setTextIsSelectable(true);
+        c.addView(cmdPreview);
+
+        LinearLayout actions = new LinearLayout(this);
+        actions.setOrientation(LinearLayout.HORIZONTAL);
+        actions.setPadding(0, dp(12), 0, 0);
+        Button start = new Button(this);
+        start.setText(R.string.btn_start_server);
+        start.setAllCaps(false);
+        start.setOnClickListener(v -> startServer());
+        actions.addView(start, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        actions.addView(smallButton(getString(R.string.btn_load_defaults), v -> {
+            applyToForm(new ServerSettings());
+            toast(getString(R.string.toast_defaults_loaded));
+        }));
+        c.addView(actions);
+        cbAutostart = new CheckBox(this);
+        cbAutostart.setText(R.string.cb_autostart);
+        cbAutostart.setOnCheckedChangeListener((b, x) -> Prefs.setAutostart(this, x));
+        c.addView(cbAutostart);
+
         // --- Modell ---
         c.addView(title(getString(R.string.title_model)));
         modelAdapter = adapter(modelItems);
@@ -519,31 +545,6 @@ public class MainActivity extends Activity implements TermuxResultReceiver.Liste
         field(c, R.string.label_verbosity, spVerbosity, 0);
         etExtra = edit(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         field(c, R.string.label_extra, etExtra, R.string.hint_extra);
-
-        c.addView(title(getString(R.string.title_cmdline)));
-        cmdPreview = new TextView(this);
-        cmdPreview.setTypeface(Typeface.MONOSPACE);
-        cmdPreview.setTextSize(12);
-        cmdPreview.setTextIsSelectable(true);
-        c.addView(cmdPreview);
-
-        LinearLayout actions = new LinearLayout(this);
-        actions.setOrientation(LinearLayout.HORIZONTAL);
-        actions.setPadding(0, dp(12), 0, 0);
-        Button start = new Button(this);
-        start.setText(R.string.btn_start_server);
-        start.setAllCaps(false);
-        start.setOnClickListener(v -> startServer());
-        actions.addView(start, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        actions.addView(smallButton(getString(R.string.btn_load_defaults), v -> {
-            applyToForm(new ServerSettings());
-            toast(getString(R.string.toast_defaults_loaded));
-        }));
-        c.addView(actions);
-        cbAutostart = new CheckBox(this);
-        cbAutostart.setText(R.string.cb_autostart);
-        cbAutostart.setOnCheckedChangeListener((b, x) -> Prefs.setAutostart(this, x));
-        c.addView(cbAutostart);
 
         // --- App ---
         c.addView(title(getString(R.string.title_app)));
