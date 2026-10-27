@@ -3,7 +3,7 @@
 **A one-tap Android front end for [llama.cpp](https://github.com/ggml-org/llama.cpp) running in [Termux](https://github.com/termux/termux-app).**
 Pick a model, adjust the parameters, start `llama-server` and chat in the built-in web UI, all in one app.
 
-[Deutsche Version](README.de.md)
+[Deutsche Version](README.de.md) 
 
 > **What works on the tablet and what doesn't?** Measurements, recommended settings, GPU crashes, dead ends (OpenCL, MTP) and the complete Termux/llama.cpp setup with build script are documented in the wiki: **[Termux and Building llama.cpp](https://concrete-bobcat-e1f.notion.site/Termux-and-Building-llama-cpp-3ec54030382a817983dbdd7ea52c2303)**
 
@@ -11,7 +11,7 @@ Llama Launcher does not bundle llama.cpp. The server keeps running in Termux, wh
 
 Built and tested on a Honor MagicPad 3 Pro (Snapdragon 8 Elite Gen 5, Adreno 840, Android 16).
 
-## Features
+## Features:
 
 - **Model list** from your models folder (one subfolder level). mmproj files, split parts 2..n, MTP drafters and LoRA adapters are recognised and not listed as models.
 - **Settings remembered per model.** Selecting a model loads the values you last started it with.
